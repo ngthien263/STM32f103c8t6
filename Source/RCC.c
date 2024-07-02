@@ -1,28 +1,25 @@
 #include<RCC.h>
 #include<GPIO.h>
 
-void RCC_GPIO_CLK_EN(uint32_t GPIO_BASEADDR) {
-    if(GPIO_BASEADDR == GPIOA_BASEADDR){
-        RCC->APB2ENR.BITS.IOPAEN = 1;
-    }
-    else if(GPIO_BASEADDR == GPIOB_BASEADDR){
-        RCC->APB2ENR.BITS.IOPBEN = 1;
-    }
-    else if(GPIO_BASEADDR == GPIOC_BASEADDR){
-        RCC->APB2ENR.BITS.IOPCEN = 1;
-    }
-    else if(GPIO_BASEADDR == GPIOD_BASEADDR){
-        RCC->APB2ENR.BITS.IOPDEN = 1;
-    }
-    else if(GPIO_BASEADDR == GPIOE_BASEADDR){
-        RCC->APB2ENR.BITS.IOPEEN = 1;
-    }
-    else if(GPIO_BASEADDR == GPIOF_BASEADDR){
-        RCC->APB2ENR.BITS.IOPFEN = 1;
-    }
-    else if(GPIO_BASEADDR == GPIOG_BASEADDR){
-        RCC->APB2ENR.BITS.IOPGEN = 1;
-    }
+#define GPIOA_BASEADDR (ABP2_BASEADDR | 0x0800)
+#define GPIOB_BASEADDR (ABP2_BASEADDR | 0x0C00)
+#define GPIOC_BASEADDR (ABP2_BASEADDR | 0x1000)
+#define GPIOD_BASEADDR (ABP2_BASEADDR | 0x1400)
+#define GPIOE_BASEADDR (ABP2_BASEADDR | 0x1800)
+#define GPIOF_BASEADDR (ABP2_BASEADDR | 0x1C00)
+#define GPIOG_BASEADDR (ABP2_BASEADDR | 0x2000)
+
+#define GPIOA ((GPIO_map*)GPIOA_BASEADDR)
+#define GPIOB ((GPIO_map*)GPIOB_BASEADDR)
+#define GPIOC ((GPIO_map*)GPIOC_BASEADDR)
+#define GPIOD ((GPIO_map*)GPIOD_BASEADDR)
+#define GPIOE ((GPIO_map*)GPIOE_BASEADDR)
+#define GPIOF ((GPIO_map*)GPIOF_BASEADDR)
+#define GPIOG ((GPIO_map*)GPIOG_BASEADDR)
+
+void RCC_GPIO_CLK_EN(volatile GPIO_map *GPIOx) {
+    uint32_t io_port = (uint32_t)GPIOx - (uint32_t)GPIOA_BASEADDR) / ((uint32_t)GPIOB_BASEADDR - (uint32_t)GPIOA_BASEADDR;
+    RCC->APB2ENR |= (1 << (io_port + 2);
 }
 
 int main()
