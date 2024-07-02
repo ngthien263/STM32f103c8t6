@@ -1,6 +1,6 @@
 #ifndef GPIO_H_
 #define GPIO_H_
-#include<common.h>
+#include <C:\Users\Thien\Desktop\STM32f103c8t6\Include\stm32f103.h>
 
 #define GPIOA_BASEADDR (ABP2_BASEADDR | 0x0800)
 #define GPIOB_BASEADDR (ABP2_BASEADDR | 0x0C00)
@@ -19,43 +19,46 @@
 #define GPIOG ((GPIO_map*)GPIOG_BASEADDR)
 
 typedef enum 
-{
-    GPIO_OUTPUT_MODE_10M_PP = 0x0001,
-    GPIO_OUTPUT_MODE_10M_OD = 0x0101,
-    GPIO_ALT_MODE_10M_PP    = 0x1001,
-    GPIO_ALT_MODE_10M_OD    = 0x1101,
-    GPIO_OUTPUT_MODE_2M_PP  = 0x0010,
-    GPIO_OUTPUT_MODE_2M_OD  = 0x0110,
-    GPIO_ALT_MODE_2M_PP     = 0x1010,
-    GPIO_ALT_MODE_2M_OD     = 0x1110,
-    GPIO_OUTPUT_MODE_50M_PP = 0x0011,
-    GPIO_OUTPUT_MODE_50M_OD = 0x0111,
-    GPIO_ALT_MODE_50M_PP    = 0x1011,
-    GPIO_ALT_MODE_50M_OD    = 0x1111,
-    GPIO_INPUT_MODE_ANALOG  = 0x0000,
-    GPIO_INPUT_MODE_FLOAT   = 0x0100,
-    GPIO_INPUT_MODE_PuPd    = 0x1000
+{                                                       
+    GPIO_OUTPUT_MODE_10M_PP = 0x1,  // 0b0001
+    GPIO_OUTPUT_MODE_10M_OD = 0x5,  // 0b0101
+    GPIO_ALT_MODE_10M_PP    = 0x9,  // 0b1001
+    GPIO_ALT_MODE_10M_OD    = 0xD,  // 0b1101
+    GPIO_OUTPUT_MODE_2M_PP  = 0x2,  // 0b0010
+    GPIO_OUTPUT_MODE_2M_OD  = 0x6,  // 0b0110
+    GPIO_ALT_MODE_2M_PP     = 0xA,  // 0b1010
+    GPIO_ALT_MODE_2M_OD     = 0xE,  // 0b1110
+    GPIO_OUTPUT_MODE_50M_PP = 0x3,  // 0b0011
+    GPIO_OUTPUT_MODE_50M_OD = 0x7,  // 0b0111
+    GPIO_ALT_MODE_50M_PP    = 0xB,  // 0b1011
+    GPIO_ALT_MODE_50M_OD    = 0xF,  // 0b1111
+    GPIO_INPUT_MODE_ANALOG  = 0x0,  // 0b0000
+    GPIO_INPUT_MODE_FLOAT   = 0x4,  // 0b0100
+    GPIO_INPUT_MODE_PuPd    = 0x8   // 0b1000
 } GPIO_MODE;
 
+
 typedef enum {
-    PINA0 = 0x00, PINA1 = 0x04, PINA2 = 0x08, PINA3 = 0x0C, PINA4 = 0x10, PINA5 = 0x14, PINA6 = 0x18, PINA7 = 0x1C,
-    PINA8 = 0x20, PINA9 = 0x24, PINA10 = 0x28, PINA11 = 0x2C, PINA12 = 0x30, PINA13 = 0x34, PINA14 = 0x38, PINA15 = 0x3C,
-    PINB0 = 0x00, PINB1 = 0x04, PINB2 = 0x08, PINB3 = 0x0C, PINB4 = 0x10, PINB5 = 0x14, PINB6 = 0x18, PINB7 = 0x1C,
-    PINB8 = 0x20, PINB9 = 0x24, PINB10 = 0x28, PINB11 = 0x2C, PINB12 = 0x30, PINB13 = 0x34, PINB14 = 0x38, PINB15 = 0x3C,
-    PINC0 = 0x00, PINC1 = 0x04, PINC2 = 0x08, PINC3 = 0x0C, PINC4 = 0x10, PINC5 = 0x14, PINC6 = 0x18, PINC7 = 0x1C,
-    PINC8 = 0x20, PINC9 = 0x24, PINC10 = 0x28, PINC11 = 0x2C, PINC12 = 0x30, PINC13 = 0x34, PINC14 = 0x38, PINC15 = 0x3C,
-    PIND0 = 0x00, PIND1 = 0x04, PIND2 = 0x08, PIND3 = 0x0C, PIND4 = 0x10, PIND5 = 0x14, PIND6 = 0x18, PIND7 = 0x1C,
-    PIND8 = 0x20, PIND9 = 0x24, PIND10 = 0x28, PIND11 = 0x2C, PIND12 = 0x30, PIND13 = 0x34, PIND14 = 0x38, PIND15 = 0x3C,
-    PINE0 = 0x00, PINE1 = 0x04, PINE2 = 0x08, PINE3 = 0x0C, PINE4 = 0x10, PINE5 = 0x14, PINE6 = 0x18, PINE7 = 0x1C,
-    PINE8 = 0x20, PINE9 = 0x24, PINE10 = 0x28, PINE11 = 0x2C, PINE12 = 0x30, PINE13 = 0x34, PINE14 = 0x38, PINE15 = 0x3C,
-    PINF0 = 0x00, PINF1 = 0x04, PINF2 = 0x08, PINF3 = 0x0C, PINF4 = 0x10, PINF5 = 0x14, PINF6 = 0x18, PINF7 = 0x1C,
-    PINF8 = 0x20, PINF9 = 0x24, PINF10 = 0x28, PINF11 = 0x2C, PINF12 = 0x30, PINF13 = 0x34, PINF14 = 0x38, PINF15 = 0x3C,
-    PING0 = 0x00, PING1 = 0x04, PING2 = 0x08, PING3 = 0x0C, PING4 = 0x10, PING5 = 0x14, PING6 = 0x18, PING7 = 0x1C,
-    PING8 = 0x20, PING9 = 0x24, PING10 = 0x28, PING11 = 0x2C, PING12 = 0x30, PING13 = 0x34, PING14 = 0x38, PING15 = 0x3C
+    PIN0  = 0x00, 
+    PIN1  = 0x04,
+    PIN2  = 0x08, 
+    PIN3  = 0x0C, 
+    PIN4  = 0x10, 
+    PIN5  = 0x14, 
+    PIN6  = 0x18, 
+    PIN7  = 0x1C,
+    PIN8  = 0x00, 
+    PIN9  = 0x04, 
+    PIN10 = 0x08, 
+    PIN11 = 0x0C, 
+    PIN12 = 0x10, 
+    PIN13 = 0x14, 
+    PIN14 = 0x18, 
+    PIN15 = 0x1C
 } GPIO_PIN;
 
-void GPIO_Init(volatile GPIO_map *GPIOx, GPIO_PIN Pin, GPIO_MODE Mode);
-
+static inline void GPIO_SetMode(volatile GPIO_map *GPIOx, GPIO_PIN Pin, GPIO_MODE Mode);
+static inline void GPIO_GetMode(volatile GPIO_map *GPIOx, GPIO_PIN Pin);
 
 typedef struct {
     union {
