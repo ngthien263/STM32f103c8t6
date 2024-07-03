@@ -34,27 +34,14 @@ typedef enum
     GPIO_ALT_MODE_50M_OD    = 0xF,  // 0b1111
     GPIO_INPUT_MODE_ANALOG  = 0x0,  // 0b0000
     GPIO_INPUT_MODE_FLOAT   = 0x4,  // 0b0100
-    GPIO_INPUT_MODE_PuPd    = 0x8   // 0b1000
+    GPIO_INPUT_MODE_PuPd    = 0x8,  // 0b1000
+    GPIO_MODE_UNDEFINED     = -1
 } GPIO_MODE;
 
 
 typedef enum {
-    PIN0  = 0x00, 
-    PIN1  = 0x04,
-    PIN2  = 0x08, 
-    PIN3  = 0x0C, 
-    PIN4  = 0x10, 
-    PIN5  = 0x14, 
-    PIN6  = 0x18, 
-    PIN7  = 0x1C,
-    PIN8  = 0x00, 
-    PIN9  = 0x04, 
-    PIN10 = 0x08, 
-    PIN11 = 0x0C, 
-    PIN12 = 0x10, 
-    PIN13 = 0x14, 
-    PIN14 = 0x18, 
-    PIN15 = 0x1C
+    PIN0, PIN1, PIN2, PIN3, PIN4, PIN5, PIN6, PIN7,
+    PIN8, PIN9, PIN10, PIN11, PIN12, PIN13, PIN14, PIN15
 } GPIO_PIN;
 
 static inline void GPIO_SetMode(volatile GPIO_map *GPIOx, GPIO_PIN Pin, GPIO_MODE Mode);
