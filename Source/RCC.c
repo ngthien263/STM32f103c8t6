@@ -8,6 +8,7 @@
 #define GPIOE_BASEADDR (ABP2_BASEADDR | 0x1800)
 #define GPIOF_BASEADDR (ABP2_BASEADDR | 0x1C00)
 #define GPIOG_BASEADDR (ABP2_BASEADDR | 0x2000)
+#define GPIO_offset     0x0400
 
 #define GPIOA ((GPIO_map*)GPIOA_BASEADDR)
 #define GPIOB ((GPIO_map*)GPIOB_BASEADDR)
@@ -18,7 +19,7 @@
 #define GPIOG ((GPIO_map*)GPIOG_BASEADDR)
 
 void RCC_GPIO_CLK_EN(volatile GPIO_map *GPIOx) {
-    uint32_t io_port = (uint32_t)GPIOx - (uint32_t)GPIOA_BASEADDR) / ((uint32_t)GPIOB_BASEADDR - (uint32_t)GPIOA_BASEADDR;
+    uint32_t io_port = ((uint32_t)GPIOx - (uint32_t)GPIOA_BASEADDR) / GPIO_offset;
     RCC->APB2ENR |= (1 << (io_port + 2);
 }
 
