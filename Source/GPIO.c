@@ -36,4 +36,5 @@ GPIO_PIN_state GPIO_ReadPin(volatile GPIO_Typedef *GPIOx, GPIO_PIN Pin)
         return GPIO_PIN_SET;
     else if(!(GPIOx->IDR.REG & (1<<Pin)))
         return GPIO_PIN_RS;
+		return GPIO_PIN_FLOAT;
 }

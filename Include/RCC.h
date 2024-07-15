@@ -1,6 +1,7 @@
 #ifndef RCC_H_
 #define RCC_H_
-#include "stm32f103.h"
+
+#include<stm32f103.h>
 #include "GPIO.h"
 #define RCC_BASEADDR 0x40021000
 
@@ -232,9 +233,10 @@ typedef struct {
             volatile uint32_t LPWR_RSTF    : 1;
         }BITS;
     } CSR;
-} RCC_map;
+} RCC_Typedef;
 
-#define RCC ((RCC_map*)RCC_BASEADDR)
+#define RCC ((RCC_Typedef*)RCC_BASEADDR)
 
-void RCC_GPIO_CLK_EN(volatile GPIO_Typedef* GPIOx);
+void RCC_GPIO_CLK_EN(volatile GPIO_Typedef *GPIOx);
+
 #endif /* RCC_H_ */
