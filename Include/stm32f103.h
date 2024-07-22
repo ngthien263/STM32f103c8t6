@@ -1,4 +1,8 @@
-#include "stdint.h"
-#define ABP1_BASEADDR 0x40000000 
-#define ABP2_BASEADDR 0x40010000
-#define AHB_BASEADDR  0x40018000
+#ifndef STM32F103_H_
+#define STM32F103_H_
+
+#include <GPIO.h>
+#include <RCC.h>
+
+
+#endif /* STM32F103_H_ */

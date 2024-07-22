@@ -5,9 +5,6 @@
 #define __disable_irq()  asm("cpsid i");
 #define __enable_irq()   asm("cpsie i");
 
-#define NVIC_BASEADDR    0xE000E100
-#define NVIC             ((NVIC_Typedef*)NVIC_BASEADDR)
-#define NVIC_STIR        ((volatile uint32_t*)0xE000EF00)
 typedef enum      
 {
     /* -------------------  Cortex-M3 Processor Exceptions Numbers  ------------------- */
@@ -67,6 +64,10 @@ typedef enum
 } IRQn_Type;
 
 
+#define NVIC_BASEADDR    0xE000E100
+#define NVIC             ((NVIC_Typedef*)NVIC_BASEADDR)
+#define NVIC_STIR        ((volatile uint32_t*)0xE000EF00)
+
 typedef struct
 {
     volatile uint32_t ISER[3];
@@ -92,11 +93,26 @@ typedef struct
       volatile uint32_t _reserved1          : 15;
     } BITS;
   } CTRL;
-  volatile uint32_t LOAD;           //only 24 bits low are used
-  volatile uint32_t VAL;            //...
-  volatile uint32_t CALIB;          //...
+  volatile uint32_t LOAD;           /* Only 24 bits low are used */
+  volatile uint32_t VAL;            /* Only 24 bits low are used */
+  volatile uint32_t CALIB;          /* Only 24 bits low are used */
 } STK_TypeDef;
 
-void NVIC_EnableIRQ(IRQn_Type IRQn);
-void NVIC_DisableIRQ(IRQn_Type IRQn);
+struct{
+  struct {
+    unsigned char MsTick;
+  }Event;
+}Int_Flags;
+
+static inline void NVIC_EnableIRQ(IRQn_Type IRQn)
+{
+  NVIC->ISER[(uint32_t)IRQn >> 5ul] |= (1ul<<(IRQn & 0x1F));
+}
+
+static inline void NVIC_DisableIRQ(IRQn_Type IRQn)
+{
+  NVIC->ICER[(uint32_t)IRQn >> 5ul] |= (1ul<<(IRQn & 0x1F));
+}
+
+
 #endif

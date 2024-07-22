@@ -1,4 +1,4 @@
-#include "stm32f103.h"
+#include "common.h"
 
 #define USART1_BASEADDR (ABP2_BASEADDR | 0x3800)
 #define USART2_BASEADDR (ABP1_BASEADDR | 0x4400)
@@ -79,7 +79,7 @@ typedef struct
     union{
         volatile uint32_t REG;
         struct{         
-            volatile uint32_t ADD0                  : 4;;
+            volatile uint32_t ADD0                  : 4;
             volatile uint32_t _reserved1            : 1;
             volatile uint32_t LBDL                  : 1;
             volatile uint32_t LBDIE                 : 1;

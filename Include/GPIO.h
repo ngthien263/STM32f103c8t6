@@ -1,6 +1,6 @@
 #ifndef GPIO_H_
 #define GPIO_H_
-#include "stm32f103.h"
+#include "common.h"
 
 #define GPIOA_BASEADDR (ABP2_BASEADDR | 0x0800)
 #define GPIOB_BASEADDR (ABP2_BASEADDR | 0x0C00)

@@ -237,6 +237,6 @@ typedef struct {
 
 #define RCC ((RCC_Typedef*)RCC_BASEADDR)
 
-void RCC_GPIO_CLK_EN(volatile GPIO_Typedef *GPIOx);
+void RCC_GPIO_CLK_EN(GPIO_Typedef *GPIOx);
 
 #endif /* RCC_H_ */
