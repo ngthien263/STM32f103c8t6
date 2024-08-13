@@ -30,38 +30,57 @@ void SPI_Init(SPI_TypeDef* SPIx, SPIInit_TypeDef* SPIInit)
     if (!SPIInit)
     {
         static SPIInit_TypeDef defaultSPIInit = {
-            .Trans_Mode = SPI_FULL_DUPLEX,
-            .Mode = SPI_MASTER,
-            .CPha = SPI_FIRST_TRANS,
-            .CPol = SPI_CLOCK_TO_0,
-            .BRDiv = SPI_BR_DIV16,
-            .BitOrder = SPI_MSB_FIRST,
-            .NSSMode = SPI_NSS_SOFT,
-            .DataWidth = SPI_DATAWIDTH_8BIT
+            .Trans_Mode = SPI_TRANSFER_MODE_FULL_DUPLEX,
+            .Mode 			= SPI_OPERATE_MODE_MASTER,
+            .CPha 			= SPI_CPHA_FIRST_TRANS,
+            .CPol 			= SPI_CPOL_LOW,
+            .BRDiv 			= SPI_BR_DIV2,
+            .BitOrder		= SPI_LSB_FIRST,
+            .NSSMode 		= SPI_NSS_SOFT,
+            .DataWidth  = SPI_DATAWIDTH_16BIT  ,
+						.DMA        = 0,
+						.Interrupt  = 0,
         };
         SPIInit = &defaultSPIInit;
     }
 
     // Configure SPI
-    SPIx->CR1.REG = SPIInit->Trans_Mode | SPIInit->Mode | SPIInit->CPha | SPIInit->CPol | SPIInit->BRDiv | SPIInit->BitOrder | SPIInit->NSSMode | SPIInit->DataWidth;
-    
+    SPIx->CR1.REG = SPIInit->Trans_Mode | 
+										SPIInit->Mode       | 
+										SPIInit->CPha       | 
+										SPIInit->CPol       | 
+										SPIInit->BRDiv      | 
+										SPIInit->BitOrder   | 
+										SPIInit->NSSMode    | 	
+										SPIInit->DataWidth;
+    if(SPIInit->NSSMode == SPI_NSS_HARD_OUTPUT)
+			SPIx->CR2.BITS.SSOE = 1;
+		SPIx->CR2.REG = SPIInit->DMA | SPIInit->Interrupt;
     // Enable SPI
     SPIx->CR1.BITS.SPE = 1;
 }
 
-void SPI_send(SPI_TypeDef* SPIx, unsigned char c)
+uint8_t SPI_Received8(SPI_TypeDef *SPIx)
 {
-	SPIx->DR = c;
+	while(SPIx->SR.BITS.RXNE);
+	return (uint8_t)SPIx->DR;
+}
+
+uint16_t SPI_Received16(SPI_TypeDef *SPIx)
+{
+	while(SPIx->SR.BITS.RXNE);
+	return SPIx->DR;
+}
+
+void SPI_Transmit8(SPI_TypeDef* SPIx, uint8_t Data)
+{
+	*(uint8_t*)SPIx->DR = Data;
 	while(!SPIx->SR.BITS.TXE);
 }
 
-void SPI_str(SPI_TypeDef* SPIx, unsigned char* str)
+void SPI_Transmit16(SPI_TypeDef* SPIx, uint8_t Data)
 {
-	for(unsigned char i = 0; str[i] != '\0'; i++)
-	{
-		SPIx->DR = str[i];
-		while(!SPIx->SR.BITS.TXE);
-	}
+	SPIx->DR = Data;
+	while(SPIx->SR.BITS.TXE);
 }
-
 

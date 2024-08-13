@@ -1,22 +1,6 @@
-#ifndef GPIO_H_
-#define GPIO_H_
-#include "common.h"
+#include <stdint.h>
+#include "base_adrr.h"
 
-#define GPIOA_BASEADDR (ABP2_BASEADDR | 0x0800)
-#define GPIOB_BASEADDR (ABP2_BASEADDR | 0x0C00)
-#define GPIOC_BASEADDR (ABP2_BASEADDR | 0x1000)
-#define GPIOD_BASEADDR (ABP2_BASEADDR | 0x1400)
-#define GPIOE_BASEADDR (ABP2_BASEADDR | 0x1800)
-#define GPIOF_BASEADDR (ABP2_BASEADDR | 0x1C00)
-#define GPIOG_BASEADDR (ABP2_BASEADDR | 0x2000)
-#define GPIO_offset	   0x04
-#define GPIOA ((GPIO_Typedef*)GPIOA_BASEADDR)
-#define GPIOB ((GPIO_Typedef*)GPIOB_BASEADDR)
-#define GPIOC ((GPIO_Typedef*)GPIOC_BASEADDR)
-#define GPIOD ((GPIO_Typedef*)GPIOD_BASEADDR)
-#define GPIOE ((GPIO_Typedef*)GPIOE_BASEADDR)
-#define GPIOF ((GPIO_Typedef*)GPIOF_BASEADDR)
-#define GPIOG ((GPIO_Typedef*)GPIOG_BASEADDR)
 
 typedef enum 
 {                 
@@ -231,10 +215,29 @@ typedef struct {
         } BITS;
     } LCKR;
 } GPIO_Typedef;
-#define GPIO_SetPin(GPIOx, Pin) ((GPIOx)->BSRR.REG = (1u << (Pin)))
-#define GPIO_ResetPin(GPIOx, Pin) ((GPIOx)->BSRR.REG = (1u << (Pin + 16)))
-#define GPIO_TogglePin(GPIOx, Pin) ((GPIOx)->ODR.REG ^= (1u << Pin))        
-void GPIO_SetMode(volatile GPIO_Typedef *GPIOx, GPIO_PIN Pin, GPIO_MODE Mode);
-GPIO_MODE GPIO_GetMode(volatile GPIO_Typedef *GPIOx, GPIO_PIN Pin);
-GPIO_PIN_state GPIO_ReadPin(volatile GPIO_Typedef *GPIOx, GPIO_PIN Pin);
-#endif /* GPIO_H_ */
+
+static inline void GPIO_SetMode(volatile GPIO_Typedef *GPIOx, GPIO_PIN Pin, GPIO_MODE Mode)
+{
+    if(Pin < 8)
+    {
+        GPIOx->CRL.REG &= ~(0xF << (Pin * 4u));
+        GPIOx->CRL.REG |= Mode << (Pin * 4u);
+    }
+    else if(Pin >= 8 )
+    {
+        GPIOx->CRH.REG &= ~(0xF << ((Pin - 8) * 4u));
+        GPIOx->CRH.REG |= Mode << ((Pin - 8) * 4u);
+    }
+}
+
+
+#define GPIOA ((GPIO_Typedef*)GPIOA_BASEADDR)
+#define GPIOB ((GPIO_Typedef*)GPIOB_BASEADDR)
+#define GPIOC ((GPIO_Typedef*)GPIOC_BASEADDR)
+#define GPIOD ((GPIO_Typedef*)GPIOD_BASEADDR)
+#define GPIOE ((GPIO_Typedef*)GPIOE_BASEADDR)
+#define GPIOF ((GPIO_Typedef*)GPIOF_BASEADDR)
+#define GPIOG ((GPIO_Typedef*)GPIOG_BASEADDR)
+
+
+

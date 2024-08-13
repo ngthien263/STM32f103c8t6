@@ -1,40 +1,47 @@
-#include "GPIO.h"
 #include "USART.h"
 #include "RCC.h"
-
-void USART_Init(volatile USART_map *USARTx, uint32_t BAUD_RATE, unsigned char word_length,  stopBits_Typedef stopBits){
+void USART_Init(USART_Typedef *USARTx, uint32_t BAUD_RATE){
+    uint32_t fclk = 0;
+    //Enable AFIO RCC
+    RCC->APB2ENR.BITS.AFIOEN = 1;
     //Set pin to USART Mode
     if(USARTx == USART1)
     {
-        GPIO_SetMode(GPIOA, 9,  GPIO_ALT_MODE_50M_OD);
-        GPIO_SetMode(GPIOA, 10, GPIO_ALT_MODE_50M_OD);
         RCC->APB2ENR.BITS.USART1EN = 1;
+        fclk = RCC_GetAbp2Clk();
     }
     else if(USARTx == USART2)
     {
-        GPIO_SetMode(GPIOA, 2, GPIO_ALT_MODE_50M_OD);
-        GPIO_SetMode(GPIOA, 3, GPIO_ALT_MODE_50M_OD);
+        RCC->APB1ENR.BITS.USART2_EN = 1;
+        fclk = RCC_GetAbp1Clk();
     }
     else if(USARTx == USART3)
     {
-        GPIO_SetMode(GPIOB, 10, GPIO_ALT_MODE_50M_OD);
-        GPIO_SetMode(GPIOB, 11, GPIO_ALT_MODE_50M_OD);
+        RCC->APB1ENR.BITS.USART3_EN = 1;
+        fclk = RCC_GetAbp1Clk();
     }
-	
     //Calculate the BAUDRATE
-		int fck = 8000000;
-    double USART_DIV = 1.0 * BAUD_RATE * 16 / fck;
+	  double USART_DIV = 1.0 * fclk / (BAUD_RATE << 4) ;
     USARTx->BRR.BITS.DIV_MANTISSA = (uint32_t)USART_DIV;
-    USARTx->BRR.BITS.DIV_FRACTION = (uint32_t)(USART_DIV - (uint32_t)USART_DIV * 16);
-
-    USARTx->CR1.BITS.M = word_length;
-    USARTx->CR2.BITS.STOP |= (1<<stopBits);
+    USARTx->BRR.BITS.DIV_FRACTION = (uint32_t)((USART_DIV - (uint32_t)USART_DIV) * 16);
 }
 
-void USART_TX(volatile USART_map*USARTx, char *str)
+void USART_send(USART_Typedef *USARTx, unsigned char c)
 {
-    for(unsigned char i = 0; str[i] != '\0'; i++)
-    {
-        USARTx->DR.REG = str[i];
-    }
+				while(!USARTx->SR.BITS.TXE){;}
+        USARTx->DR.REG = c;
+}
+
+void USART_str(USART_Typedef *USARTx, unsigned char *str)
+{
+	for(int i = 0; str[i] != '\0'; i++)
+	{
+		USART_send(USARTx, str[i]);
+	}
+}
+
+unsigned char USART_receive(USART_Typedef *USARTx)
+{
+    while(!USARTx->SR.BITS.RXNE){;}
+    return (char)USARTx->DR.REG;
 }

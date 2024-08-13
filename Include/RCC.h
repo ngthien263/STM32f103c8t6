@@ -1,11 +1,6 @@
-#ifndef RCC_H_
-#define RCC_H_
-
-#include<stm32f103.h>
-#include "GPIO.h"
-#define RCC_BASEADDR 0x40021000
-
-
+#include <stdint.h>
+#include "base_adrr.h"
+#define RCC ((RCC_Typedef*)RCC_BASEADDR)
 typedef struct {
     union{
         volatile uint32_t REG;
@@ -233,10 +228,57 @@ typedef struct {
             volatile uint32_t LPWR_RSTF    : 1;
         }BITS;
     } CSR;
+
+    union{
+        volatile uint32_t REG; 
+        struct{ 
+            volatile uint32_t _reserved1   : 12;
+            volatile uint32_t OTGFSRST     : 1;
+            volatile uint32_t _reserved2   : 1;
+            volatile uint32_t ETHMACRST    : 1;
+            volatile uint32_t _reserved3   : 17;
+        }BITS;
+    } AHBSTR;
+
+    union{
+        volatile uint32_t REG; 
+        struct{ 
+            volatile uint32_t PREDIV1      : 4;
+            volatile uint32_t PREDIV2      : 4;
+            volatile uint32_t PLL2MUL      : 4;
+            volatile uint32_t PLL3MUL      : 4;
+            volatile uint32_t PREDIV1SRC   : 4;
+            volatile uint32_t I2S2SRC      : 4;
+            volatile uint32_t I2S3SRC      : 4;
+            volatile uint32_t _reserved    : 13;
+        }BITS;
+    } CFGR2;
 } RCC_Typedef;
 
-#define RCC ((RCC_Typedef*)RCC_BASEADDR)
 
-void RCC_GPIO_CLK_EN(GPIO_Typedef *GPIOx);
 
-#endif /* RCC_H_ */
+
+//static inline void RCC_GPIO_CLK_EN(GPIO_Typedef *GPIOx) {
+//    if(GPIOx == GPIOC)
+//    {
+//      RCC->APB2ENR.BITS.IOPCEN = 1;
+//    }
+//}
+
+typedef enum {
+    SWS_HSI         = 0,  /* HSI selected as system clock */
+    SWS_HSE         = 1,  /* HSE selected as system clock */
+    SWS_PLL         = 2,  /* PLL selected as system clock */
+    NOT_ALLOWED     = 3   /*          Not allowed         */
+} CFGR_SWS;
+
+//#ifndef HSE_CLK
+//    #warning "HSE_CLK is not defined. Defaulting to HSI_CLK."
+//		#define HSE_CLK 8000000ul
+//#endif
+
+
+uint32_t RCC_GetSysClk();
+uint32_t RCC_GetHClk();
+uint32_t RCC_GetAbp1Clk();
+uint32_t RCC_GetAbp2Clk();

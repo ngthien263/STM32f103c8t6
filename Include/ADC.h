@@ -1,4 +1,4 @@
-#include<stm32f103.h>
+#include<common.h>
 #define ADC1_BASEADDR (ABP2_BASEADDR | 0x2400)
 #define ADC2_BASEADDR (ABP2_BASEADDR | 0x2800)
 #define ADC3_BASEADDR (ABP2_BASEADDR | 0x3C00)

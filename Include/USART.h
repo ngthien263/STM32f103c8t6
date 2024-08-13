@@ -1,16 +1,10 @@
-#include "common.h"
-
-#define USART1_BASEADDR (ABP2_BASEADDR | 0x3800)
-#define USART2_BASEADDR (ABP1_BASEADDR | 0x4400)
-#define USART3_BASEADDR (ABP1_BASEADDR | 0x4800)
-#define UART4_BASEADDR  (ABP1_BASEADDR | 0x4800)
-#define UART5_BASEADDR  (ABP1_BASEADDR | 0x5000)
-
-#define USART1 ((USART_map*)USART1_BASEADDR)
-#define USART2 ((USART_map*)USART2_BASEADDR)
-#define USART3 ((USART_map*)USART3_BASEADDR)
-#define UART4  ((USART_map*)UART4_BASEADDR)
-#define UART5  ((USART_map*)UART5_BASEADDR)
+#include "stdint.h"
+#include "base_adrr.h"
+#define USART1 						((USART_Typedef*)USART1_BASEADDR)
+#define USART2 						((USART_Typedef*)USART2_BASEADDR)
+#define USART3 						((USART_Typedef*)USART3_BASEADDR)
+#define UART4  						((USART_Typedef*)UART4_BASEADDR)
+#define UART5  						((USART_Typedef*)UART5_BASEADDR)
 
 typedef enum {
     STOP_BITS_1,
@@ -26,24 +20,24 @@ typedef struct
         volatile uint32_t REG;
         struct
         {
-            volatile uint32_t PE;
-            volatile uint32_t FE;
-            volatile uint32_t NE;
-            volatile uint32_t ORE;
-            volatile uint32_t IDLE;
-            volatile uint32_t RXNE;
-            volatile uint32_t TC;
-            volatile uint32_t TXE;
-            volatile uint32_t LBD;
-            volatile uint32_t CTS;
-            volatile uint32_t _reserved;
-        }BITS;
+            volatile uint32_t PE       						 : 1;
+            volatile uint32_t FE       						 : 1;
+            volatile uint32_t NE       						 : 1;
+            volatile uint32_t ORE      						 : 1;
+            volatile uint32_t IDLE     						 : 1;
+            volatile uint32_t RXNE     						 : 1;
+            volatile uint32_t TC       						 : 1;
+            volatile uint32_t TXE      						 : 1;
+            volatile uint32_t LBD      						 : 1;
+            volatile uint32_t CTS      						 : 1;
+            volatile uint32_t _reserved						 : 22;
+        } BITS;
     } SR;
-    
+		
     union{
         volatile uint32_t REG;
         struct{
-            volatile uint32_t DR                    : 9;
+            volatile uint32_t DR                   : 9;
             volatile uint32_t _reserved            : 23;
         }BITS;
     } DR;
@@ -51,8 +45,8 @@ typedef struct
     union{
         volatile uint32_t REG;
         struct{
-            volatile uint32_t DIV_FRACTION         : 3;
-            volatile uint32_t DIV_MANTISSA         : 13;
+            volatile uint32_t DIV_FRACTION         : 4;
+            volatile uint32_t DIV_MANTISSA         : 12;
             volatile uint32_t _reserved            : 16;
         } BITS;
     } BRR;
@@ -76,6 +70,7 @@ typedef struct
             volatile uint32_t _reserved            : 18;
         } BITS;
     } CR1;
+		
     union{
         volatile uint32_t REG;
         struct{         
@@ -93,6 +88,7 @@ typedef struct
             volatile uint32_t _reserved3            : 16;
         } BITS;
     } CR2;
+		
     union{
         volatile uint32_t REG;
         struct{         
@@ -120,6 +116,9 @@ typedef struct
         } BITS;
     } USART_GTPR;
 
-}USART_map;
+}USART_Typedef;
 
-void USART_Init(volatile USART_map*USARTx, uint32_t BAUD_RATE, unsigned char word_length,  stopBits_Typedef stopBits);
+void USART_Init(USART_Typedef *USARTx, uint32_t BAUD_RATE);
+void USART_send(USART_Typedef *USARTx, unsigned char c);
+void USART_str(USART_Typedef *USARTx, unsigned char* str);
+unsigned char USART_receive(USART_Typedef *USARTx);
